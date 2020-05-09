@@ -1,0 +1,4 @@
+(executable
+      (name      basic_lemmatizer)
+      (libraries libtrie base stdio)
+      (preprocess (pps ppx_jane ppx_deriving.std)))
