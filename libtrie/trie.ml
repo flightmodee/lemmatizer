@@ -1,4 +1,3 @@
-#require "base"
 
 open Base
 open String
@@ -29,12 +28,14 @@ let rec word_to_trie wrd vals = match wrd with
 
 let rec size (Node(inf, arclist)) = match inf with
 	| [] -> (match arclist with
-			| [] -> 34
-			| [(char, trie)] -> size trie)
+			| [] -> 0
+			| (char,trie)::bfrq -> size trie + size(Node([], bfrq)))
 	
 	| _  -> (match arclist with
 			| [] -> 1
-			| [(char, trie)] -> 1 + size trie)
+			| (char,trie)::bfrq -> 1 + size trie + size(Node([], bfrq)))
+
+
 
 
 
