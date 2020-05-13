@@ -6,7 +6,7 @@ val word_to_string : word -> string
 
 
 (* type *)
-type 'a t [@@deriving show]
+type 'a t
 
 
 (* crée un trie avec la chaîne vide comme préfixe *)
