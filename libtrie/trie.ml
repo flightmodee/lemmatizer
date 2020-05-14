@@ -45,7 +45,9 @@ let rec find (Node(inf, arclist)) (wrd: char list) = match arclist with
 	| [] -> inf
 	| (chr1,Node(inf2, arclist2))::bfrq -> (match wrd with
 							| [] -> inf
-							| e::l -> if (Char.equal chr1 e) then (let nd = Node(inf2, arclist2) in (find nd l)) else (find(Node(inf, bfrq)) wrd))
+							| e::l -> if (Char.equal chr1 e) 
+									  then (let nd = Node(inf2, arclist2) in (find nd l)) 
+									  else (find(Node(inf, bfrq)) wrd))
 
 
 
