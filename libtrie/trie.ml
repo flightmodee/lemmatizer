@@ -1,5 +1,4 @@
 open Base
-open String
 
 
 
@@ -10,9 +9,9 @@ let empty inf = Node(inf, []);;
 
 let rec string_to_word_aux str length = match length with
 	| 0 -> []
-	| _ -> let char = get str (length-1) in char::(string_to_word_aux str (length-1))
+	| _ -> let char = String.get str (length-1) in char::(string_to_word_aux str (length-1))
 
-let string_to_word str = List.rev (string_to_word_aux str (length str))
+let string_to_word str = List.rev (string_to_word_aux str (String.length str))
 
 let rec word_to_string wrd = match wrd with
 	| [] -> ""
@@ -42,7 +41,7 @@ let rec arc_size (Node(inf, arclist)) = match arclist with
 
 
 let rec find (Node(inf, arclist)) (wrd: char list) = match arclist with
-	| [] -> inf
+	| [] -> let l = List.length wrd in if (l > 0) then [] else inf
 	| (chr1,Node(inf2, arclist2))::bfrq -> (match wrd with
 							| [] -> inf
 							| e::l -> if (Char.equal chr1 e) 
@@ -50,9 +49,7 @@ let rec find (Node(inf, arclist)) (wrd: char list) = match arclist with
 									  else (find(Node(inf, bfrq)) wrd))
 
 
-
-
-
+let mem trie wrd = let l = List.length (find trie wrd) in if (l = 0) then false else true
 
 
 	
