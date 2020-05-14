@@ -1,4 +1,3 @@
-
 open Base
 open String
 
@@ -36,8 +35,17 @@ let rec size (Node(inf, arclist)) = match inf with
 			| (char,trie)::bfrq -> 1 + size trie + size(Node([], bfrq)))
 
 
+let rec arc_size (Node(inf, arclist)) = match arclist with
+	| [] -> 0
+	| (char,trie)::bfrq -> 1 + arc_size trie + arc_size(Node([], bfrq))
 
 
+
+let rec find (Node(inf, arclist)) (wrd: char list) = match arclist with
+	| [] -> inf
+	| (chr1,Node(inf2, arclist2))::bfrq -> (match wrd with
+							| [] -> inf
+							| e::l -> if (Char.equal chr1 e) then (let nd = Node(inf2, arclist2) in (find nd l)) else (find(Node(inf, bfrq)) wrd))
 
 
 
