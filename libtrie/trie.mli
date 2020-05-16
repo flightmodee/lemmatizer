@@ -30,7 +30,7 @@ val mem : 'a t -> word -> bool
 
 (* renvoie la liste de mots contenus associés à leurs informations *)
 val extract : 'a t -> (word * 'a list) list
-
+	
 type 'a path
 type 'a zipper
 
