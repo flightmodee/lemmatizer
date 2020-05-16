@@ -78,6 +78,13 @@ let rec extract_aux (Node(info, arclist)) wrd_acc = match arclist with
 let extract (Node(info, arclist)) = extract_aux (Node(info, arclist)) []
 
 
+(* +++++++++++++++++++++++++++++++++++++++ Fonction sur les zippers ++++++++++++++++++++++++++++++++++++++++++ *)
+
+type 'a path = 
+	| Top
+	| Node of ('a t list) * ('a path) * ('a t list)
+
+type 'a zipper = Zipper of 'a t * 'a path
 
 
-
+let trie_to_zipper trie = Zipper(trie, Top)

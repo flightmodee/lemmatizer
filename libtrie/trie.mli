@@ -32,7 +32,7 @@ val mem : 'a t -> word -> bool
 val extract : 'a t -> (word * 'a list) list
 
 type 'a path
-type 'a zipper = Zipper of 'a path * 'a t
+type 'a zipper
 
 exception Up
 exception Down
