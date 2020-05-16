@@ -56,9 +56,15 @@ let rec extract_aux (Node(info, arclist)) wrd_acc = match arclist with
 	| [] -> [(List.rev wrd_acc, info)]
 	| (chr1, Node(info2, arclist2))::bfrq -> let ndg = Node(info2, arclist2) in let ndd = Node(info, bfrq) in
 	
-	(match info with
-		| [] -> if (bfrq != []) then ((extract_aux ndg (chr1::wrd_acc))@(extract_aux ndd wrd_acc)) else ((extract_aux ndg (chr1::wrd_acc))) 
-		| _ ->  if (bfrq != []) then ((List.rev wrd_acc, info)::(extract_aux ndg (chr1::wrd_acc))@(extract_aux ndd wrd_acc)) else ((extract_aux ndg (chr1::wrd_acc)))) 
+										(match info with
+											| [] -> if (List.is_empty bfrq) 
+													then ((extract_aux ndg (chr1::wrd_acc))) 
+													else ((extract_aux ndg (chr1::wrd_acc))@(extract_aux ndd wrd_acc)) 
+
+											| _ ->  if (List.is_empty bfrq)
+													then ((extract_aux ndg (chr1::wrd_acc)))
+													else ((List.rev wrd_acc, info)::(extract_aux ndg (chr1::wrd_acc))@(extract_aux ndd wrd_acc)))
+
 
 let extract (Node(info, arclist)) = extract_aux (Node(info, arclist)) []
 
