@@ -61,15 +61,15 @@ let mem trie wrd = let l = List.length (find trie wrd) in if (l = 0) then false 
 
 
 let rec extract_aux (Node(info, arclist)) wrd_acc = match arclist with
-	| [] -> [(List.rev wrd_acc, info)]
+	| [] ->  [(List.rev wrd_acc, info)] 
 	| (chr1, Node(info2, arclist2))::bfrq -> (match info with
 									| [] -> if (List.is_empty bfrq) 
 											then ((extract_aux (Node(info2, arclist2)) (chr1::wrd_acc))) 
-											else ((extract_aux (Node(info2, arclist2)) (chr1::wrd_acc))@(extract_aux ndd wrd_acc)) 
+											else ((extract_aux (Node(info2, arclist2)) (chr1::wrd_acc))@(extract_aux (Node(info, bfrq)) wrd_acc)) 
 
 									| _ ->  if (List.is_empty bfrq)
-											then ((List.rev wrd_acc, info)::extract_aux ndg (chr1::wrd_acc))
-											else ((List.rev wrd_acc, info)::((extract_aux ndg (chr1::wrd_acc)))@(extract_aux (Node([], bfrq)) wrd_acc)))
+											then ((List.rev wrd_acc, info)::extract_aux (Node(info2, arclist2)) (chr1::wrd_acc))
+											else ((List.rev wrd_acc, info)::((extract_aux (Node(info2, arclist2)) (chr1::wrd_acc)))@(extract_aux (Node([], bfrq)) wrd_acc)))
 
 
 	
