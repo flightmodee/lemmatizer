@@ -62,17 +62,17 @@ let mem trie wrd = let l = List.length (find trie wrd) in if (l = 0) then false 
 
 let rec extract_aux (Node(info, arclist)) wrd_acc = match arclist with
 	| [] -> [(List.rev wrd_acc, info)]
-	| (chr1, Node(info2, arclist2))::bfrq -> let ndg = Node(info2, arclist2) in let ndd = Node(info, bfrq) in
+	| (chr1, Node(info2, arclist2))::bfrq -> (match info with
+												| [] -> if (List.is_empty bfrq) 
+														then ((extract_aux (Node(info2, arclist2)) (chr1::wrd_acc))) 
+														else ((extract_aux (Node(info2, arclist2)) (chr1::wrd_acc))@(extract_aux ndd wrd_acc)) 
+
+												| _ ->  if (List.is_empty bfrq)
+														then ((List.rev wrd_acc, info)::extract_aux ndg (chr1::wrd_acc))
+														else ((List.rev wrd_acc, info)::((extract_aux ndg (chr1::wrd_acc)))@(extract_aux (Node([], bfrq)) wrd_acc)))
+
+
 	
-										(match info with
-											| [] -> if (List.is_empty bfrq) 
-													then ((extract_aux ndg (chr1::wrd_acc))) 
-													else ((extract_aux ndg (chr1::wrd_acc))@(extract_aux ndd wrd_acc)) 
-
-											| _ ->  if (List.is_empty bfrq)
-													then ((extract_aux ndg (chr1::wrd_acc)))
-													else ((List.rev wrd_acc, info)::(extract_aux ndg (chr1::wrd_acc))@(extract_aux ndd wrd_acc)))
-
 
 
 let extract (Node(info, arclist)) = extract_aux (Node(info, arclist)) []
@@ -82,7 +82,7 @@ let extract (Node(info, arclist)) = extract_aux (Node(info, arclist)) []
 
 type 'a path = 
 	| Top
-	| Node of ('a t list) * ('a path) * ('a t list)
+	| Noeud of ('a t list) * ('a path) * ('a t list)
 
 type 'a zipper = Zipper of 'a t * 'a path
 
