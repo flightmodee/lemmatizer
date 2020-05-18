@@ -94,15 +94,16 @@ let trie_to_zipper trie = Zipper(trie,[])
 let zip_down_exn (Zipper(Node(info, arclist), path)) = match arclist with
 	| [] -> failwith "Down of last"
 	| (chr, Node(info_down, arclist_down))::bfrq -> match path with 
-										| [] -> Zipper(Node(info_down, arclist_down), [([(chr, (Node(info, [])))], bfrq)])
-										| (pth, bfrq_list)::_ -> Zipper(Node(info_down, arclist_down), [([(chr, (Node(info, pth)))], bfrq@bfrq_list)])
+													| [] -> Zipper(Node(info_down, arclist_down), [([(chr, (Node(info, [])))], bfrq)])
+													| (pth, bfrq_list)::_ -> Zipper(Node(info_down, arclist_down), [([(chr, (Node(info, pth)))], bfrq@bfrq_list)])
 
 
 let zip_up_exn (Zipper(Node(info, arclist), path)) = match path with
 	| [] -> failwith "Up of first"
-	| ([(chr, Node(info_up, arclist_up))], bfrq_list)::_ -> match bfrq_list with
-										| [] -> Zipper(Node(info_up, [(chr, Node(info, arclist))]), [(arclist_up, bfrq_list)])
-										| arc::arcl -> Zipper(Node(info_up, [(chr, Node(info, arclist))]@[arc]), [(arclist_up, arcl)])
+	| ([], _)::_ -> failwith "Up of first"
+	| ((chr, Node(info_up, arclist_up))::_, bfrq_list)::_ -> match bfrq_list with
+																| [] -> Zipper(Node(info_up, [(chr, Node(info, arclist))]), [(arclist_up, bfrq_list)])
+																| arc::arcl -> Zipper(Node(info_up, [(chr, Node(info, arclist))]@[arc]), [(arclist_up, arcl)])
 
 
 
