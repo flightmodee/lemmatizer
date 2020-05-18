@@ -81,13 +81,29 @@ let extract (Node(info, arclist)) = extract_aux (Node(info, arclist)) []
 
 (* +++++++++++++++++++++++++++++++++++++++ Fonction sur les zippers ++++++++++++++++++++++++++++++++++++++++++ *)
 
-type 'a path = 
-	| Top
-	| Noeud of ('a t list) * ('a path) * ('a t list)
+(*Mon type 'a path est défini ainsi : il s'agit d'une liste de couple d'arcs. L'arc list de gauche correspond au chemin qui lie le noeud focusé à la racine (qu'on implémente ici sous forme d'une arclist qui ne contiendra qu'un seul élément, pour que l'on puisse travailler avec dans le constructeur Node)
+Quant à l'autre arclist, elle  me permet de stocker une liste d'arcs lorsque l'on se trouve dans un noeud à plusieurs bifurcations et que l'on descend : ainsi, en descendant, on conserve l'arclist du noeud précédent, ce qui nous servira à reconstituer le tout en remontant.*)
+
+type 'a path = ('a arc list * 'a arc list) list
 
 type 'a zipper = Zipper of 'a t * 'a path
 
 
-let trie_to_zipper trie = Zipper(trie, Top)
+let trie_to_zipper trie = Zipper(trie,[])
+
+let zip_down_exn (Zipper(Node(info, arclist), path)) = match arclist with
+	| [] -> failwith "Down of last"
+	| (chr, Node(info_down, arclist_down))::bfrq -> match path with 
+												| [] -> Zipper(Node(info_down, arclist_down), [([(chr, (Node(info, [])))], bfrq)])
+												| (pth, bfrq_list)::_ -> Zipper(Node(info_down, arclist_down), [([(chr, (Node(info, pth)))], bfrq@bfrq_list)])
+
+
+let zip_up_exn (Zipper(Node(info, arclist), path)) = match path with
+	| [] -> failwith "Up of first"
+	| ([(chr, Node(info_up, arclist_up))], bfrq_list)::_ -> match bfrq_list with
+																| [] -> Zipper(Node(info_up, [(chr, Node(info, arclist))]), [(arclist_up, bfrq_list)])
+																| arc::arcl -> Zipper(Node(info_up, [(chr, Node(info, arclist))]@[arc]), [(arclist_up, arcl)])
+
+
 
 

@@ -39,6 +39,7 @@ exception Down
 exception Left
 exception Right
 
+
 (* renvoie un zipper avec focus sur la racine de l'arbre *)
 val trie_to_zipper : 'a t -> 'a zipper
 
