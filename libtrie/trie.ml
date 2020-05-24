@@ -81,11 +81,10 @@ let extract (Node(info, arclist)) = extract_aux (Node(info, arclist)) []
 
 (* +++++++++++++++++++++++++++++++++++++++ Fonction sur les zippers ++++++++++++++++++++++++++++++++++++++++++ *)
 
-(*Expliquons un peu les deux premiers types. L'idée principale est la suivante : lorsque l'on focus un noeud possédant plus d'un arc (donc à l'arclist comportant au moins deux éléments), et que l'on décide de descendre dans le premier fils dudit noeud, il faut conserver les arcs qui donnent vers les autres noeuds fils. J'ai donc d'abord défini un type 'a chemin qui est concrètement le type du chemin d'un noeud à la racine, puis mon type final 'a path est constitué d'une liste de trie, et d'un chemin.*)
+(*Expliquons un peu les deux premiers types. L'idée principale est la suivante : lorsque l'on focus un noeud possédant plus d'un arc (donc à l'arclist comportant au moins deux éléments), et que l'on décide de descendre dans le premier fils dudit noeud, il faut conserver les arcs qui donnent vers les autres noeuds fils. Et inversement, il faut pouvoir, en remontant, rattacher une arclist à un noeud. Cependant, il faut pouvoir associer à chaque noeud son arclist. J'ai donc d'abord défini un type 'a chemin qui est concrètement le type du chemin d'un noeud à la racine, puis mon type final 'a path est constitué d'un couple comportant un chemin, ainsi qu'une liste d'arclist, me permettant de stocker, pour chaque noeud donné, son arclist correspondante. Un noeud ne possédant pas d'arcs externes possède une arclist vide, donc [].*)
 
-(*ARC LIST LIST, au final ?*)
 
-type 'a chemin = Top | Noeud of 'a list * char * 'a chemin
+type 'a chemin = Top | Chemin of 'a list * char * 'a chemin
 type 'a path =  'a chemin * ('a arc list) list
 
 type 'a zipper = Zipper of 'a t * 'a path
@@ -104,5 +103,18 @@ let trie_to_zipper trie = Zipper(trie, (Top, []))
 let zip_down_exn (Zipper (Node(info, arclist), (path, alist_l))) = match arclist with
 	| [] -> failwith "Down of last"
 	| (chr, Node(info_down, arclist_down))::bfrq -> match path with
-													| Top -> Zipper(Node(info_down, arclist_down), (Noeud(info_down, chr, Top), (bfrq::alist_l)))
-													| Noeud(info_p, char_p, chemin) -> Zipper(Node(info_down, arclist_down), (Noeud(info_down, chr, Noeud(info_p, char_p, chemin)), (bfrq::alist_l)))
+													| Top -> Zipper(Node(info_down, arclist_down), (Chemin(info_down, chr, Top), (bfrq::alist_l)))
+													| Chemin(info_p, char_p, chemin) -> Zipper(Node(info_down, arclist_down), (Chemin(info_down, chr, Chemin(info_p, char_p, chemin)), (bfrq::alist_l)))
+
+let zip_up_exn (Zipper(Node(info, arclist), (path, alist_l))) = match path with
+	| Top -> failwith "Up of first!"
+	| Chemin (_, chr_n1, pth) -> match pth with
+											| Top -> if (List.is_empty alist_l) 
+													 then (Zipper(Node([], [(chr_n1, Node(info, arclist))]), (Top, alist_l))) 
+													 else (let e = List.hd_exn alist_l in Zipper(Node([], [(chr_n1, Node(info, arclist))]@e), (Top, List.tl_exn alist_l)))
+					
+											
+											
+											| Chemin (info_n2, chr_n2, pth2) -> if (List.is_empty alist_l) 
+																			 then (Zipper(Node(info_n2, [(chr_n1, Node(info, arclist))]), (Chemin(info_n2, chr_n2, pth2), alist_l)))
+																			 else (let e = List.hd_exn alist_l in Zipper(Node(info_n2, [(chr_n1, Node(info, arclist))]@e), (Chemin(info_n2, chr_n2, pth2), List.tl_exn alist_l)))
