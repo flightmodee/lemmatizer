@@ -1,6 +1,0 @@
-Aemilia	100	np	[pred="Aemilia_____1<Suj:(sn)>",@hum,@first_name,cat=np,@fs]	Aemilia_____1	Default	fs	%default	nc-1fs
-Afrique du Sud	100	np	[pred="Afrique du Sud_____1<Suj:(sn)>",@loc,cat=np,@fs]	Afrique du Sud_____1	Default	fs	%default	np-fs
-Aiguebelette-le-Lac	100	np	[pred="Aiguebelette-le-Lac_____1<Suj:(sn)>",@loc,cat=np,@ms]	Aiguebelette-le-Lac_____1	Default	ms	%default	np-ms
-Aileas	100	np	[pred="Aileas_____1<Suj:(sn)>",@hum,@first_name,cat=np,@fs]	Aileas_____1	Default	fs	%default	nc-1fs
-Aisling	100	np	[pred="Aisling_____1<Suj:(sn)>",@hum,@first_name,cat=np,@fs]	Aisling_____1	Default	fs	%default	nc-1fs
-Ally	100	np	[pred="Ally_____2<Suj:(sn)>",@loc,cat=np,@ms]	Ally_____2	Default	ms	%default	np-ms
