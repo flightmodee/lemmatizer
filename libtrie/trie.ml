@@ -94,7 +94,9 @@ let trie_to_zipper trie = Zipper(trie, Top)
 
 let zip_down_exn (Zipper (t, p)) = match t with
 	| Node (_, []) -> failwith "Down of last"
-	| Node (info, (chr,t)::arcl) -> if (List.is_empty arcl) then (Zipper (t, Chemin ([], chr, p, []))) else (Zipper (t, Chemin ([], chr, p, [Node (info, arcl)])))
+	| Node (info, (chr,t)::arcl) -> if (List.is_empty arcl) 
+									then (Zipper (t, Chemin ([], chr, p, []))) 
+									else (Zipper (t, Chemin ([], chr, p, [Node (info, arcl)])))
 
 let zip_up_exn (Zipper (t, p)) = match p with
 	| Top -> failwith "Up of first" 
