@@ -174,14 +174,14 @@ et d'utiliser un accumulateur qui me permet de récupérer chaque arc, comme vou
 
 
 
-let rec insert_aux (Node (i, a)) arclist w d = match w with
-	| [] -> Node ([d], a@arclist)
+let rec insert_aux (Node (i, acc)) arclist w d = match w with
+	| [] -> Node ([d], acc@arclist)
 	| e::l -> match arclist with
-				| [] -> Node (i, a@[(e, word_to_trie l [d])])
+				| [] -> Node (i, acc@[(e, word_to_trie l [d])])
 				| (chr, Node (info, al))::reste -> if (Char.equal e chr)
 									 then (let ins = insert_aux (Node (info, [])) al l d in 
 											Node (i, (e, ins)::reste))
-									 else (insert_aux (Node (i, a@[(chr, Node(info, al))])) reste (e::l) d)
+									 else (insert_aux (Node (i, acc@[(chr, Node(info, al))])) reste (e::l) d)
 
 
 let insert (Node (info, alist)) w d = insert_aux (Node (info, [])) alist w d
