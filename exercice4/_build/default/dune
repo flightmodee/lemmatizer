@@ -1,0 +1,3 @@
+(executable
+      (name      create_lexicon)
+      (libraries libtrie base stdio))

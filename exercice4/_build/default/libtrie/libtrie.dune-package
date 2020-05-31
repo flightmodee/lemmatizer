@@ -1,0 +1,42 @@
+(lang dune 2.5)
+(name libtrie)
+(library
+ (name libtrie)
+ (kind normal)
+ (archives (byte libtrie.cma) (native libtrie.cmxa))
+ (plugins (byte libtrie.cma) (native libtrie.cmxs))
+ (native_archives libtrie.a)
+ (requires
+  base
+  stdio
+  ppx_sexp_conv.runtime-lib
+  ppx_compare.runtime-lib
+  ppx_enumerate.runtime-lib
+  ppx_hash.runtime-lib
+  ppx_here.runtime-lib
+  ppx_assert.runtime-lib
+  ppx_bench.runtime-lib
+  bin_prot
+  fieldslib
+  ppx_inline_test.runtime-lib
+  ppx_module_timer.runtime
+  typerep
+  variantslib
+  ppx_expect.collector
+  ppx_expect.config
+  base_quickcheck
+  ppx_deriving.runtime)
+ (main_module_name Libtrie)
+ (modes byte native)
+ (modules
+  (wrapped
+   (main_module_name Libtrie)
+   (modules
+    ((name Trie) (obj_name libtrie__Trie) (visibility public) (impl) (intf)))
+   (alias_module
+    (name Libtrie)
+    (obj_name libtrie)
+    (visibility public)
+    (kind alias)
+    (impl))
+   (wrapped true))))

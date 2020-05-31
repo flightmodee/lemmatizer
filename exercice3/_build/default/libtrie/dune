@@ -1,0 +1,5 @@
+(library
+  (name        libtrie)
+  (public_name        libtrie)
+  (libraries base stdio)
+  (preprocess (pps ppx_jane ppx_deriving.std)))

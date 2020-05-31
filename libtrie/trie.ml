@@ -2,7 +2,8 @@ open Base
 
 type word = char list
 
-
+(*Il me fallait récupérer la longueur de la chaîne passée en paramètre de la fonction string_to_word,
+d'où l'utilisation d'une sous-routine.*)
 
 let rec string_to_word_aux str length = match length with
 	| 0 -> []
@@ -29,6 +30,11 @@ let rec word_to_trie wrd vals = match wrd with
 	| e::res -> Node([], [(e, (word_to_trie res vals))])
 
 
+(*La fonction récursive size renvoie le nombre de mots stockés dans le trie passé en argument.
+Son fonctionnement est plutôt simple : on vérifie le trie passé en argument. Si l'information est vide, alors les caractères
+étiquetant les arcs dont la succession aboutit audit trie ne forment pas de mot. Dans ce cas, on vérifie si l'arclist du trie est vide : si oui, 
+on renvoie tout simplement 0 (c'est le cas où l'on est dans un trie vide). Autrement, on vérifie dans le reste du trie.
+Si l'information n'est pas vide, le concept est le même, à ceci près que l'on renvoie 1 si l'arclist est vide, et 1 + le résultat de la fonction sur le reste du trie.*)
 
 let rec size (Node(inf, arclist)) = match inf with
 	| [] -> (match arclist with
@@ -47,6 +53,15 @@ let rec arc_size (Node(_, arclist)) = match arclist with
 
 
 
+(*La fonction récursive find prend un trie et un mot en argument, et renvoie la liste
+d'informations associée à un mot par le trie. Il me semble important de définir son fonctionnement.
+En premier lieu, la condition d'arrêt : en effet, elle est un peu particulière, puisqu'elle dépend
+de la longueur du mot. En effet, supposons que nous soyons arrivé à la fin du trie, et qu'il reste des éléments dans notre char list, 
+alors on renverra directement [], car le mot n'est pas dans la liste. Cela évite le cas suivant : un trie contient un mot a, et 
+le mot passé en argument possède a comme préfixe. Si l'on ne précise pas la condition de longueur du mot, il renverra une information non-vide.i
+Quant au reste de la fonction, elle est simple : lorsque l'arclist n'est pas vide, on vérifie d'abord si le mot, lui, l'est.
+Si c'est le cas, on renvoie l'information du noeud dans lequel nous nous trouvons. Autrement, on compare le char de l'arc à celui de la tête du mot :
+s'ils correspondent, on se trouve dans l'arc où nous voulons bosser, et on continue dedans ! Sinon, on regarde dans les autres.*)
 
 let rec find (Node(info, arclist)) (wrd: char list) = match arclist with
 	| [] -> let l = List.length wrd in if (l > 0) then [] else info
@@ -60,6 +75,15 @@ let rec find (Node(info, arclist)) (wrd: char list) = match arclist with
 
 let mem trie wrd = let l = List.length (find trie wrd) in if (l = 0) then false else true
 
+
+(*La fonction extract est très importante : elle renvoie une liste contenant les mots stockés dans un trie.
+Pour ce faire, j'ai utilisé une sous-routine prenant un argument supplémentaire, une liste vide me servant d'accumulateur
+qui servira à entreposer des mots (dans cette fonction, chaque accumulateur en contiendra 0 ou 1), jusqu'à ce que l'on arrive à la fin de ce dernier..
+
+On va d'abord match l'arclist du Trie passé en argument : si celle-ci contient au moins un arc, alors on regarde l'information du trie de base:
+si l'information est vide, nous ne nous trouvons pas dans un mot. Dans ce cas, si la liste d'arcs du trie est vide, alors on se 
+contente de rappeler la fonction sur le sous-trie, tout en faisant attention de bien rajouter à la liste le caractère de l'arc.
+Si elle n'est pas vide, il faut bifurquer : alors nous continuons dans le premier arc, mais on concatènera également le résultat de l'extraction du reste de la liste d'arcs.*)
 
 
 
@@ -75,7 +99,6 @@ let rec extract_aux (Node(info, arclist)) wrd_acc = match arclist with
 											else ((List.rev wrd_acc, info)::((extract_aux (Node (info2, arclist2)) (chr1::wrd_acc)))@(extract_aux (Node([], bfrq)) wrd_acc)))
 
 
-	
 
 
 let extract (Node(info, arclist)) = extract_aux (Node(info, arclist)) []
@@ -180,6 +203,11 @@ J'ai donc décidé d'extraire la liste d'arcs,
 et d'utiliser un accumulateur qui me permet de récupérer chaque arc sur lequel on ne travaille plus,
 afin de pouvoir travailler avec le suivant, comme vous pourrez le voir dans le code ci-dessous.*)
 
+
+(*Le principe est le suivant : dans le cas où le mot n'est pas vide, mais que l'arclist d'un noeud l'est, on insère directement le mot à ce noeud.
+En revanche, si l'arclist contient au moins un élément, voici comment on procède : on compare d'abord le char de l'arc, avec la tête du mot. Si elles
+matchent, alors on va rester dans cet arc (on ne touche pas aux autres éléments de l'arclist), mais travailler avec la suite de l'arc.
+Ainsi, on concacène l'accumulateur (afin de reconstituer le trie) au résultat de l'insertion sur le noeud suivant et on concatène le tout au reste de l'arclist.*)
 
 
 let rec insert_aux (Node (i, acc)) arclist w d = match w with
