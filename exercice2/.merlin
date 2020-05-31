@@ -1,0 +1,16 @@
+EXCLUDE_QUERY_DIR
+B /home/samy/.opam/default/lib/base
+B /home/samy/.opam/default/lib/base/base_internalhash_types
+B /home/samy/.opam/default/lib/base/caml
+B /home/samy/.opam/default/lib/base/shadow_stdlib
+B /home/samy/.opam/default/lib/sexplib0
+B /home/samy/.opam/default/lib/stdio
+B _build/default/.print_stream.eobjs/byte
+S /home/samy/.opam/default/lib/base
+S /home/samy/.opam/default/lib/base/base_internalhash_types
+S /home/samy/.opam/default/lib/base/caml
+S /home/samy/.opam/default/lib/base/shadow_stdlib
+S /home/samy/.opam/default/lib/sexplib0
+S /home/samy/.opam/default/lib/stdio
+S .
+FLG -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs
