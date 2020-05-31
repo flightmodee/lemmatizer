@@ -1,0 +1,2 @@
+(** @canonical Libtrie.Trie *)
+module Trie = Libtrie__Trie

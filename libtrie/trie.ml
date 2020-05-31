@@ -1,18 +1,15 @@
 open Base
 
+type word = char list
 
-
-type 'a t = Node of 'a list * ('a arc list) and 'a arc = char * 'a t
-
-let empty inf = Node(inf, [])
 
 
 let rec string_to_word_aux str length = match length with
 	| 0 -> []
 	| _ -> let char = String.get str (length-1) in char::(string_to_word_aux str (length-1))
 
-
 let string_to_word str = List.rev (string_to_word_aux str (String.length str))
+
 
 
 let rec word_to_string wrd = match wrd with
@@ -21,27 +18,32 @@ let rec word_to_string wrd = match wrd with
 
 
 
+type 'a t = Node of 'a list * ('a arc list) and 'a arc = char * 'a t
+
+
+let empty inf = Node(inf, [])
+
+
 let rec word_to_trie wrd vals = match wrd with
 	| [] -> Node(vals, [])
 	| e::res -> Node([], [(e, (word_to_trie res vals))])
 
 
 
-
 let rec size (Node(inf, arclist)) = match inf with
 	| [] -> (match arclist with
 			| [] -> 0
-			| (char,trie)::bfrq -> size trie + size(Node([], bfrq)))
+			| (_,trie)::bfrq -> size trie + size(Node([], bfrq)))
 	
 	| _  -> (match arclist with
 			| [] -> 1
-			| (char,trie)::bfrq -> 1 + size trie + size(Node([], bfrq)))
+			| (_,trie)::bfrq -> 1 + size trie + size(Node([], bfrq)))
 
 
 
-let rec arc_size (Node(inf, arclist)) = match arclist with
+let rec arc_size (Node(_, arclist)) = match arclist with
 	| [] -> 0
-	| (char,trie)::bfrq -> 1 + arc_size trie + arc_size(Node ([], bfrq))
+	| (_,trie)::bfrq -> 1 + arc_size trie + arc_size(Node ([], bfrq))
 
 
 
@@ -94,6 +96,11 @@ type 'a path = Top | NoeudP of 'a arc list * char * 'a list * 'a path * 'a arc l
 
 (*On notera par ailleurs que j'ai pris la liberté de changer de place les deux champs du constructeur, dans un souci de lisibilité.*)
 type 'a zipper = Zipper of 'a t * 'a path
+
+exception Up
+exception Down
+exception Left
+exception Right
 
 
 (*Fonction de base, qui crée un zipper à partir d'un trie, en plaçant le focus à la racine du trie.*)
@@ -170,7 +177,8 @@ on passait à l'autre arc. Or, cela n'était pas possible avec la signature
 de la fonction insert, qui imposait de travailler avec tout le noeud, il me fallait trouver
 un moyen de pouvoir travailler de façon individuelle avec l'arclist de chaque noeud.
 J'ai donc décidé d'extraire la liste d'arcs, 
-et d'utiliser un accumulateur qui me permet de récupérer chaque arc, comme vous pourrez le voir dans le code ci-dessous.*)
+et d'utiliser un accumulateur qui me permet de récupérer chaque arc sur lequel on ne travaille plus,
+afin de pouvoir travailler avec le suivant, comme vous pourrez le voir dans le code ci-dessous.*)
 
 
 
@@ -179,8 +187,8 @@ let rec insert_aux (Node (i, acc)) arclist w d = match w with
 	| e::l -> match arclist with
 				| [] -> Node (i, acc@[(e, word_to_trie l [d])])
 				| (chr, Node (info, al))::reste -> if (Char.equal e chr)
-									 then (let ins = insert_aux (Node (info, [])) al l d in 
-											Node (i, (e, ins)::reste))
+									 then (let ins = (chr, insert_aux (Node (info, [])) al l d) in 
+											Node (i, acc@[ins]@reste))
 									 else (insert_aux (Node (i, acc@[(chr, Node(info, al))])) reste (e::l) d)
 
 

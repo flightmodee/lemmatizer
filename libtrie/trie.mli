@@ -1,4 +1,4 @@
-type word = char list
+type word
 (* "bonjour" -> ['b';'o';'n';'j';'o';'u';'r'] *)
 val string_to_word : string -> word
 (* ['b';'o';'n';'j';'o';'u';'r'] -> "bonjour" *)
