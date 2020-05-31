@@ -177,7 +177,8 @@ on passait à l'autre arc. Or, cela n'était pas possible avec la signature
 de la fonction insert, qui imposait de travailler avec tout le noeud, il me fallait trouver
 un moyen de pouvoir travailler de façon individuelle avec l'arclist de chaque noeud.
 J'ai donc décidé d'extraire la liste d'arcs, 
-et d'utiliser un accumulateur qui me permet de récupérer chaque arc, comme vous pourrez le voir dans le code ci-dessous.*)
+et d'utiliser un accumulateur qui me permet de récupérer chaque arc sur lequel on ne travaille plus,
+afin de pouvoir travailler avec le suivant, comme vous pourrez le voir dans le code ci-dessous.*)
 
 
 
@@ -186,8 +187,8 @@ let rec insert_aux (Node (i, acc)) arclist w d = match w with
 	| e::l -> match arclist with
 				| [] -> Node (i, acc@[(e, word_to_trie l [d])])
 				| (chr, Node (info, al))::reste -> if (Char.equal e chr)
-									 then (let ins = insert_aux (Node (info, [])) al l d in 
-											Node (i, (e, ins)::reste))
+									 then (let ins = (chr, insert_aux (Node (info, [])) al l d) in 
+											Node (i, acc@[ins]@reste))
 									 else (insert_aux (Node (i, acc@[(chr, Node(info, al))])) reste (e::l) d)
 
 
