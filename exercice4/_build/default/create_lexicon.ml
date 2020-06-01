@@ -31,3 +31,4 @@ let () =
   let () = List.iter lwords ~f:(fun (s,_) -> printf "%s\n" (Trie.word_to_string s)) in
   let oc = Stdlib.open_out_bin "lexicon.bin" in
   Caml.Marshal.to_channel oc lexicon []
+

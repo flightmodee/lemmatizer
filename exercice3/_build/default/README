@@ -1,0 +1,21 @@
+La fonction show n'étant pas implémentée dans le fichier trie.ml, je vous propose de tester les fonctions sur le trie de la manière suivante.
+
+1) Ouvrez utop
+2) Rentrez les commandes suivantes : #require "base";; #use "trie.ml";;
+3) Rentrez ceci : let t1 = word_to_trie (string_to_word "bonjour") [()] in
+let t2 = insert t1 (string_to_word "bon") () in
+let t3 = insert t2 (string_to_word "jour") () in insert t3 (string_to_word "bonhomme") ();;
+
+4) ???
+5) Profit
+
+Voici d'autres tests que vous pouvez réaliser : 
+
+let t1 = word_to_trie (string_to_word "jour") [()] in
+let t2 = insert t1 (string_to_word "homme") () in
+let t3 = insert t2 (string_to_word "bon) () in insert t3 (string_to_word "jour") ();;
+
+
+
+
+let t1 = word_to_trie(string_to_word "OCAML") [()] in let t2 = insert t1 (string_to_word "c'est") () in let t3 = insert t2 (string_to_word "cool") () in insert t3 (string_to_word "!" ();;

@@ -1,0 +1,25 @@
+description = ""
+requires =
+"base
+ base_quickcheck
+ bin_prot
+ fieldslib
+ ppx_assert.runtime-lib
+ ppx_bench.runtime-lib
+ ppx_compare.runtime-lib
+ ppx_deriving.runtime
+ ppx_enumerate.runtime-lib
+ ppx_expect.collector
+ ppx_expect.config
+ ppx_hash.runtime-lib
+ ppx_here.runtime-lib
+ ppx_inline_test.runtime-lib
+ ppx_module_timer.runtime
+ ppx_sexp_conv.runtime-lib
+ stdio
+ typerep
+ variantslib"
+archive(byte) = "libtrie.cma"
+archive(native) = "libtrie.cmxa"
+plugin(byte) = "libtrie.cma"
+plugin(native) = "libtrie.cmxs"

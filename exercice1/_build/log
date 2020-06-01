@@ -1,11 +1,11 @@
-# dune build print.exe
+# dune build
 # OCAMLPARAM: unset
 # Workspace root:
 # /home/samy/PRIPRO/proj-pripro-2020-abdouchepathmanathan/exercice1
-$ /usr/bin/nproc > /tmp/dunece768d.output 2> /dev/null
+$ /usr/bin/nproc > /tmp/dune9eba3a.output 2> /dev/null
 # Auto-detected concurrency: 8
 # disable binary cache
-$ /usr/bin/ocamlc.opt -config > /tmp/dunede8ca3.output
+$ /usr/bin/ocamlc.opt -config > /tmp/dune5ca1a9.output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -104,7 +104,3 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dunede8ca3.output
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl print.ml) > _build/default/.print.eobjs/print.ml.d
-$ (cd _build/default && /usr/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I .print.eobjs/byte -I /home/samy/.opam/default/lib/base -I /home/samy/.opam/default/lib/base/base_internalhash_types -I /home/samy/.opam/default/lib/base/caml -I /home/samy/.opam/default/lib/base/shadow_stdlib -I /home/samy/.opam/default/lib/sexplib0 -I /home/samy/.opam/default/lib/stdio -no-alias-deps -opaque -o .print.eobjs/byte/dune__exe__Print.cmo -c -impl print.ml)
-$ (cd _build/default && /usr/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I .print.eobjs/byte -I .print.eobjs/native -I /home/samy/.opam/default/lib/base -I /home/samy/.opam/default/lib/base/base_internalhash_types -I /home/samy/.opam/default/lib/base/caml -I /home/samy/.opam/default/lib/base/shadow_stdlib -I /home/samy/.opam/default/lib/sexplib0 -I /home/samy/.opam/default/lib/stdio -intf-suffix .ml -no-alias-deps -opaque -o .print.eobjs/native/dune__exe__Print.cmx -c -impl print.ml)
-$ (cd _build/default && /usr/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o print.exe /home/samy/.opam/default/lib/base/base_internalhash_types/base_internalhash_types.cmxa -I /home/samy/.opam/default/lib/base/base_internalhash_types /home/samy/.opam/default/lib/base/caml/caml.cmxa /home/samy/.opam/default/lib/sexplib0/sexplib0.cmxa /home/samy/.opam/default/lib/base/shadow_stdlib/shadow_stdlib.cmxa /home/samy/.opam/default/lib/base/base.cmxa -I /home/samy/.opam/default/lib/base /home/samy/.opam/default/lib/stdio/stdio.cmxa .print.eobjs/native/dune__exe__Print.cmx)
