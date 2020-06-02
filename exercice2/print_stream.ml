@@ -5,10 +5,8 @@ type 'a stream = Nil | Cons of 'a * 'a stream thunk and 'a thunk = unit -> 'a
 
 
 let getOption v = match v with
+	| None -> failwith "Empty option"
 	| Some e -> e
-	| None -> failwith "option is none";;
-
-
 	
 let split_aux (sl:string list) : (string * string * string) = match sl with
 	| a::_::c::_::e::_ -> (a,c, getOption (List.hd (String.split e ~on:'_')))

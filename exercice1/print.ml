@@ -8,11 +8,12 @@ open Base
 (* cf. la documentation https://ocaml.janestreet.com/ocaml-core/latest/doc/stdio/Stdio/In_channel/index.html *)
 (* vous appellerez ensuite extract_line *)
 
+
 (*La fonction Base.Option.get n'existant pas, j'ai redéfini une fonction à peu près similaire*)
 
 let getOption v = match v with
+	| None -> failwith "option is none"
 	| Some e -> e
-	| None -> failwith "option is none";;
 
 
 
@@ -20,7 +21,7 @@ let getOption v = match v with
 
 let split_aux (sl:string list) : (string * string * string) = match sl with
 	| a::_::c::_::e::_ -> (a,c, getOption (List.hd (String.split e ~on:'_')))
-	| _ -> failwith "This shouldn't have happened. Stop. Get some help."
+	| _ -> failwith "This shouldn't have happened. Stop it. Get some help."
 ;;
 
 

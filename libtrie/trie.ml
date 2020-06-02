@@ -2,7 +2,10 @@ open Base
 
 type word = char list
 
-let getAccent dec = match dec with
+(*Le fonctionnement des cinq premières fonctions, primordiales dans le cadre d'un affichage de lemmes accentués correct
+est décrit dans le README contenu dans le dossier libtrie, afin de ne pas polluer le code.*)
+
+let getDiacFromChars dec = match dec with
 | 130 -> 192
 | 135 -> 199
 | 136 -> 200
@@ -23,14 +26,35 @@ let getAccent dec = match dec with
 | _ -> Char.of_int_exn dec |> Char.to_int
 
 
+let getCharsFromDiac dec = match dec with 
+	| 192 -> "\195\130"
+	| 199 -> "\195\135"
+	| 200 -> "\195\135"
+	| 201 -> "\195\137"
+	| 202 -> "\195\138"
+	| 212 -> "\195\148"
+	| 224 -> "\195\160"
+	| 226 -> "\195\162"
+	| 228 -> "\195\164"
+	| 230 -> "\195\166"
+	| 231 -> "\195\167"
+	| 232 -> "\195\168"
+	| 233 -> "\195\169"
+	| 234 -> "\195\170"
+	| 235 -> "\195\171"
+	| 244 -> "\195\180"
+	| 249 -> "\195\185"
+	| _ -> Char.of_int_exn dec |> String.make 1
+
+
 
 	let rec string_to_word_aux str i = if (i = String.length str) 
-then ([]) 
-	else (let chr = String.get str i in 
-			let ioc = chr |> Char.to_int in 
-			match ioc with
-			| 195 -> (String.get str (i+1) |> Char.to_int |> getAccent |> Char.of_int_exn)::(string_to_word_aux str (i+2))
-			| _ -> chr::(string_to_word_aux str (i+1)))
+						then ([]) 
+						else (let chr = String.get str i in 
+								let ioc = chr |> Char.to_int in 
+								match ioc with
+								| 195 -> (String.get str (i+1) |> Char.to_int |> getDiacFromChars |> Char.of_int_exn)::(string_to_word_aux str (i+2))
+								| _ -> chr::(string_to_word_aux str (i+1)))
 
 
 
@@ -41,18 +65,7 @@ then ([])
 
 	let rec word_to_string wrd = match wrd with
 	| [] -> ""
-| e::res -> let chr = String.make 1 e in chr^(word_to_string res)
-
-
-
-
-
-
-
-
-
-
-
+	| e::res -> let deci = Char.to_int e in let chr_str = getCharsFromDiac deci in chr_str^(word_to_string res)
 
 
 
@@ -171,28 +184,28 @@ let trie_to_zipper trie = Zipper(trie, Top)
 	let zip_down_exn (Zipper (t, p)) = match t with
 	| Node (_, []) -> failwith "Down of last"
 	| Node (info, (chr,t)::arcl) -> if (List.is_empty arcl) 
-	then (Zipper (t, NoeudP ([], chr, info, p, []))) 
-else (Zipper (t, NoeudP ([], chr, info, p, arcl)))
+										then (Zipper (t, NoeudP ([], chr, info, p, []))) 
+										else (Zipper (t, NoeudP ([], chr, info, p, arcl)))
 
 
 (*Cette fonction prend un Zipper en argument, déplace le focus sur le noeud père, si possible, puis renvoie le zipper correspondant.*)
 	let zip_up_exn (Zipper (t, p)) = match p with
 	| Top -> failwith "Up of first" 
-| NoeudP (l, chr, info, p, r) -> Zipper (Node (info, List.rev_append l ((chr,t)::r)), p)
+	| NoeudP (l, chr, info, p, r) -> Zipper (Node (info, List.rev_append l ((chr,t)::r)), p)
 
 
 (*Cette fonction prend un Zipper en argument, déplace le focus sur le frère gauche précédent, si possible, et renvoie le zipper correspondant.*)
 	let zip_left_exn (Zipper (t, p)) = match p with
 	| Top -> failwith "Left of Top"
 	| NoeudP ([], _, _, _, _) -> failwith "No left trie"
-| NoeudP ((chr_l, n)::left, chr, info, p, right) -> Zipper (n, NoeudP (left, chr_l, info, p, ((chr, t)::right)))
+	| NoeudP ((chr_l, n)::left, chr, info, p, right) -> Zipper (n, NoeudP (left, chr_l, info, p, ((chr, t)::right)))
 
 
 (*Cette fonction prend un Zipper en argument, déplace le focus sur le frère gauche précédent, si possible, et renvoie le zipper correspondant.*)
 	let zip_right_exn (Zipper (t, p)) = match p with
 	| Top -> failwith "right of Top"
 	| NoeudP (_, _, _, _, []) -> failwith "right of last"
-| NoeudP (left, chr, info, p, (chr_r, n)::right) -> Zipper (n, NoeudP ((chr, t)::left, chr_r, info, p, right))
+	| NoeudP (left, chr, info, p, (chr_r, n)::right) -> Zipper (n, NoeudP ((chr, t)::left, chr_r, info, p, right))
 
 
 (*Les quatre fonctions qui suivent sont assez équivoques, de par leur nom.*)
@@ -209,7 +222,7 @@ else (Zipper (t, NoeudP ([], chr, info, p, arcl)))
 (*Cette fonction permet de renvoyer le trie correspondant au zipper passé en paramètre.*)
 	let rec zipper_to_trie (Zipper (Node (info, arclist), path)) = match path with
 	| Top -> Node (info, arclist)
-| NoeudP (l, chr, info_n, p, r) -> zipper_to_trie (Zipper (Node (info_n, List.rev_append l ((chr, Node (info, arclist))::r)), p))
+	| NoeudP (l, chr, info_n, p, r) -> zipper_to_trie (Zipper (Node (info_n, List.rev_append l ((chr, Node (info, arclist))::r)), p))
 
 
 
@@ -220,12 +233,12 @@ else (Zipper (t, NoeudP ([], chr, info, p, arcl)))
 
 	let zip_insert_right (Zipper (t, p)) (c: char) node = match p with
 	| Top -> failwith "Insert of top"
-| NoeudP (l, chr, info, u, r) -> Zipper (t, NoeudP (l, chr, info, u, (c,node)::r))
+	| NoeudP (l, chr, info, u, r) -> Zipper (t, NoeudP (l, chr, info, u, (c,node)::r))
 
 
 	let zip_insert_left (Zipper (t, p)) (c: char) node = match p with
 	| Top -> failwith "Insert of Top"
-| NoeudP (l, chr, info, u, r) -> Zipper (t, NoeudP ((c,node)::l, chr, info, u, r))
+	| NoeudP (l, chr, info, u, r) -> Zipper (t, NoeudP ((c,node)::l, chr, info, u, r))
 
 
 
@@ -248,13 +261,13 @@ else (Zipper (t, NoeudP ([], chr, info, p, arcl)))
 
 
 	let rec insert_aux (Node (i, acc)) arclist w d = match w with
-| [] -> Node ([d], acc@arclist)
-	| e::l -> match arclist with
-	| [] -> Node (i, acc@[(e, word_to_trie l [d])])
-| (chr, Node (info, al))::reste -> if (Char.equal e chr)
-	then (let ins = (chr, insert_aux (Node (info, [])) al l d) in 
-			Node (i, acc@[ins]@reste))
-else (insert_aux (Node (i, acc@[(chr, Node(info, al))])) reste (e::l) d)
+			| [] -> Node ([d], acc@arclist)
+			| e::l -> match arclist with
+						| [] -> Node (i, acc@[(e, word_to_trie l [d])])
+						| (chr, Node (info, al))::reste -> if (Char.equal e chr)
+														   then (let ins = (chr, insert_aux (Node (info, [])) al l d) in 
+																Node (i, acc@[ins]@reste))
+														   else (insert_aux (Node (i, acc@[(chr, Node(info, al))])) reste (e::l) d)
 
 
 	let insert (Node (info, alist)) w d = insert_aux (Node (info, [])) alist w d

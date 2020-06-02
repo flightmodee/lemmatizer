@@ -2,10 +2,10 @@
 # OCAMLPARAM: unset
 # Workspace root:
 # /home/samy/PRIPRO/proj-pripro-2020-abdouchepathmanathan/libtrie
-$ /usr/bin/nproc > /tmp/dune264ead.output 2> /dev/null
+$ /usr/bin/nproc > /tmp/dune89105b.output 2> /dev/null
 # Auto-detected concurrency: 8
 # disable binary cache
-$ /usr/bin/ocamlc.opt -config > /tmp/dune6937bb.output
+$ /usr/bin/ocamlc.opt -config > /tmp/dune31a04c.output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"

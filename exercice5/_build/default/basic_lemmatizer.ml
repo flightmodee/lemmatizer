@@ -9,13 +9,20 @@ type t = word_diff_cat Trie.t
 
 let word_length w = Trie.word_to_string w |> String.length
 
+(*Dans la fonction diff_aux, on remarque lorsque les premiers caractères du lemme et de 
+la forme fléchie utilisée ne sont pas les mêmes, on va vérifier si le caractère 
+de la forme fléchie est un diacritique ! En effet, si c'est le cas, alors son codage s'étendra
+sur deux octets, et il faut donc décrémenter la longueur renvoyée, afin que l'on saute les deux caractères en question.*)
+
 let rec diff_aux lemme ff = match ff with
 	| [] -> (0, lemme)
 	| e::reste_ff -> match lemme with
 				| [] -> (word_length (e::reste_ff), [])
 				| chr::reste_lemme -> if (Char.equal chr e) 
 									  then (diff_aux reste_lemme reste_ff)
-									  else (word_length (e::reste_ff), chr::reste_lemme)
+									  else (if (Char.to_int e > 195) 
+									  	then (word_length (e::reste_ff)-1, chr::reste_lemme) 
+									  	else (word_length (e::reste_ff), chr::reste_lemme))
 
 
 let diff lemme ff = diff_aux lemme ff
@@ -71,6 +78,8 @@ let lexicon =
         then acc else Trie.insert acc (Trie.string_to_word f) wc)
 
 let () = printf "created trie %d\n%!" (Trie.size lexicon);
+		 printf "%s" "\nBienvenue dans le lemmatiseur ! Attention, le lemmatiseur
+est sensible à la casse, faites attention aux mots que vous rentrez.\n";
   let oc = Stdlib.open_out_bin "lexicon.bin" in
   Caml.Marshal.to_channel oc lexicon []
 
@@ -79,12 +88,12 @@ let lemmatizer = make_lemmatize lexicon
 
 
 let rec loop () =
-  let () = printf "\nEntrer forme à lemmatiser:\n%!" in
+  let () = printf "\n\nVeuillez entrer une forme à lemmatiser:\n%!" in
   match Stdio.In_channel.input_line Stdio.stdin with
   | None -> ()
   | Some s ->
     let l = Trie.string_to_word s |> lemmatizer in
-    let () = List.iter ~f:(fun (l,c)-> printf "%s %s" (Trie.word_to_string l) c) l
+    let () = List.iter ~f:(fun (l,c)-> printf "%s %s %s" "Le lemme associé est :" (Trie.word_to_string l) c) l
     in loop ()
 
 

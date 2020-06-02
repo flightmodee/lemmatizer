@@ -1,0 +1,17 @@
+Ce README a pour but de détailler le code contenu dans le fichier trie.ml.
+
+Commençons par le commencement : dans le devoir, il ne nous était pas demandé de gérer l'affichage des lemmes accentués.
+Ainsi, certains résultats renvoyés par le lemmatiseur, bien que corrects, n'étaient pas correctement affichés, puisque les diacritiques étaient remplacés par leur codage décimal (\233 pour le é, par exemple). J'ai voulu gérer ce problème, et il me fallait tout d'abord commencer par changer ma fonction string_to_word.
+
+J'ai d'abord remarqué qu'en essayant de convertir une chaîne de caractères comportant un de ces caractères spéciaux, comme par exemple la chaîne école, cela me renvoyait le word suivant :
+['Ã';'©';'o';'l';'e']. Mais également que pour d'autres diacritiques, le schéma était le même : ils étaient codés sur deux octets, le premier fixé à \195, le deuxième variant, ce qui permettait de coder les
+diacritiques en question.
+
+Ainsi, pour pouvoir obtenir un word correct (donc ['é';'c';'o';'l';'e']), il me fallait écrire une fonction qui, dans le cas où un caractère a pour codage décimal 195, matcherait le codage
+du second caractère, pour finalement renvoyer le code décimal du diacritique correspondant, d'où la fonction getDiacFromChars.
+On remarquera que j'ai choisi d'encapsuler quelques diacritiques, parmi ceux usités en français, et ceux susceptibles d'apparaître dans le fichier extract-eleff.
+
+Il me fallait donc, par la suite, écrire une fonction qui fait l'inverse, donc qui va tout simplement récupérer, dans une char list, chaque caractère, récupérer son codage décimal
+et renvoyer les deux caractères qui le codent, sous forme d'une chaîne de caractères !
+
+Ainsi, pour le codage 233, qui correspond à l'entier, cela renverra "\195\169", et cela reproduira finalement une chaîne de caractères correctement lisible.

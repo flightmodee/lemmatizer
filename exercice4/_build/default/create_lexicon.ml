@@ -28,7 +28,7 @@ let () =
                 |> extract
                 |> List.fold ~init:(Trie.empty []) ~f:(fun acc (f,_,_) -> Trie.insert acc (Trie.string_to_word f) ()) in
   let lwords = Trie.extract lexicon in
-  let () = List.iter lwords ~f:(fun (s,_) -> printf "%s\n" (Trie.word_to_string s)) in
+  let () = List.iter lwords ~f:(fun (s,_) -> printf "%s\n%!" (Trie.word_to_string s)) in
   let oc = Stdlib.open_out_bin "lexicon.bin" in
   Caml.Marshal.to_channel oc lexicon []
 

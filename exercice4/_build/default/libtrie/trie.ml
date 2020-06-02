@@ -2,7 +2,26 @@ open Base
 
 type word = char list
 
-let getAccent dec = match dec with
+(*Beaucoup de choses à expliquer ici ! Le problème était le suivant.
+Il ne nous était pas demandé de gérer les accents, dans le projet.
+Ainsi, nous pouvions nous retrouver avec des lemmes aux affichages
+particuliers, où les lettres accentuées étaient affichées sous leur représentation
+décimale, et j'ai voulu changer ça. 
+Ainsi, j'ai fait en sorte que les mots accentués passés en paramètre
+de la fonction string_to_word soient bien transformés corectement en words. etc.......*)
+
+
+(*Dans une chaîne de caractère comportant des lettres accentuées (oui
+plus généralement des diacritiques, ces lettres sont codées sur deux octets :
+le premier est fixe (et vaut 195), le deuxième varie, et c'est le deuxième qui
+va nous fournir l'accent requis ! Ainsi, en fonction de cette deuxième valeur, 
+on renvoie un entier correspondant au code décimal de la lettre accentuée en question,
+basé sur la table ISO-Latin1.
+On peut remarquer ici que je me suis restreint aux diacritiques usités dans la langue française, et
+plus particulièrement à ceux susceptibles d'apparaître dans le lexicon final.*)
+
+
+let getDiacFromChars dec = match dec with
 | 130 -> 192
 | 135 -> 199
 | 136 -> 200
@@ -22,15 +41,39 @@ let getAccent dec = match dec with
 | 185 -> 249
 | _ -> Char.of_int_exn dec |> Char.to_int
 
+(*Cependant, il faudra faire l'inverse dans la fonction word_to_string, c'est-à-dire renvoyer, pour chaque diacritique, 
+les deux caractères qui le codent, voici donc l'inverse de la fonction précédente ! On peut voir la première comme une bijection, au final.*)
+
+let getCharsFromDiac dec = match dec with 
+	| 192 -> "\195\130"
+	| 199 -> "\195\135"
+	| 200 -> "\195\135"
+	| 201 -> "\195\137"
+	| 202 -> "\195\138"
+	| 212 -> "\195\148"
+	| 224 -> "\195\160"
+	| 226 -> "\195\162"
+	| 228 -> "\195\164"
+	| 230 -> "\195\166"
+	| 231 -> "\195\167"
+	| 232 -> "\195\168"
+	| 233 -> "\195\169"
+	| 234 -> "\195\170"
+	| 235 -> "\195\171"
+	| 244 -> "\195\180"
+	| 249 -> "\195\185"
+	| _ -> Char.of_int_exn dec |> String.make 1
+	
+
 
 
 	let rec string_to_word_aux str i = if (i = String.length str) 
-then ([]) 
-	else (let chr = String.get str i in 
-			let ioc = chr |> Char.to_int in 
-			match ioc with
-			| 195 -> (String.get str (i+1) |> Char.to_int |> getAccent |> Char.of_int_exn)::(string_to_word_aux str (i+2))
-			| _ -> chr::(string_to_word_aux str (i+1)))
+						then ([]) 
+						else (let chr = String.get str i in 
+								let ioc = chr |> Char.to_int in 
+								match ioc with
+								| 195 -> (String.get str (i+1) |> Char.to_int |> getDiacFromChars |> Char.of_int_exn)::(string_to_word_aux str (i+2))
+								| _ -> chr::(string_to_word_aux str (i+1)))
 
 
 
@@ -41,18 +84,7 @@ then ([])
 
 	let rec word_to_string wrd = match wrd with
 	| [] -> ""
-| e::res -> let chr = String.make 1 e in chr^(word_to_string res)
-
-
-
-
-
-
-
-
-
-
-
+	| e::res -> let deci = Char.to_int e in let chr_str = getCharsFromDiac deci in chr_str^(word_to_string res)
 
 
 

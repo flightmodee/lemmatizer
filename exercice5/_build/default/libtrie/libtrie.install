@@ -17,3 +17,6 @@ lib: [
   "_build/install/default/lib/libtrie/trie.ml"
   "_build/install/default/lib/libtrie/trie.mli"
 ]
+doc: [
+  "_build/install/default/doc/libtrie/README"
+]
