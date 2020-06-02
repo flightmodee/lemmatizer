@@ -22,12 +22,11 @@ let getOption v = match v with
 let split_aux (sl:string list) : (string * string * string) = match sl with
 	| a::_::c::_::e::_ -> (a,c, getOption (List.hd (String.split e ~on:'_')))
 	| _ -> failwith "This shouldn't have happened. Stop it. Get some help."
-;;
 
 
 (*La fonction extract_line prend une chaîne de caractères en arguments, et la fait passer dans la fonction split_aux qui se charge de fournir le triplet recherché.*)
 
-let extract_line (line:string) : (string*string*string) = let l = String.split line ~on:'\t' in split_aux l;;
+let extract_line (line:string) : (string*string*string) = let l = String.split line ~on:'\t' in split_aux l
 
 
 (*La fonction extract est ici définie à l'aide d'une sous-fonction récursive : elle prend un descripteur de fichier en paramètre, et fonctionne de la façon suivante.
@@ -38,7 +37,6 @@ Petit inconvénient de cette fonction, il faut que le fichier ne comporte pas de
 let rec extract_rec ic  = let line = Stdio.In_channel.input_line ic in match line with
 	| Some _ -> let triplet = getOption line |> extract_line in triplet::(extract_rec ic)
 	| None -> []
-;;
 
 let extract ic = extract_rec ic;;
 
@@ -46,7 +44,7 @@ let extract ic = extract_rec ic;;
 let () =
   In_channel.create (Sys.get_argv()).(1)
   |> extract 
-  |> List.iter ~f:(fun (f,c,l) -> printf "%s %s %s\n" f c l);;
+  |> List.iter ~f:(fun (f,c,l) -> printf "%s %s %s\n" f c l)
 
 
 
