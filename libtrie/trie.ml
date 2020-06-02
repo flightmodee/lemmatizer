@@ -47,6 +47,12 @@ let getCharsFromDiac dec = match dec with
 	| _ -> Char.of_int_exn dec |> String.make 1
 
 
+	(*Cette fonction mérite qu'on s'y intéresse un peu. La variable i
+	sert de compteur de boucle, et me permet d'accéder à chaque caractère de la string
+	passée en argument. Rien de bien compliqué, à ceci près que l'on décide de travailler
+	avec le code décimal de chaque caractère. S'il est égal à 195, il s'agit d'un diacritique et est donc
+	codé sur deux octets, d'où l'appel récursif avec (i+2), afin de sauter les deux caractères et d'avancer correctement dans la str.*)
+
 
 	let rec string_to_word_aux str i = if (i = String.length str) 
 						then ([]) 
@@ -72,12 +78,12 @@ let getCharsFromDiac dec = match dec with
 	type 'a t = Node of 'a list * ('a arc list) and 'a arc = char * 'a t
 
 
-let empty inf = Node(inf, [])
+	let empty inf = Node(inf, [])
 
 
 	let rec word_to_trie wrd vals = match wrd with
 	| [] -> Node(vals, [])
-| e::res -> Node([], [(e, (word_to_trie res vals))])
+	| e::res -> Node([], [(e, (word_to_trie res vals))])
 
 
 	(*La fonction récursive size renvoie le nombre de mots stockés dans le trie passé en argument.
@@ -99,7 +105,7 @@ let empty inf = Node(inf, [])
 
 	let rec arc_size (Node(_, arclist)) = match arclist with
 	| [] -> 0
-| (_,trie)::bfrq -> 1 + arc_size trie + arc_size(Node ([], bfrq))
+	| (_,trie)::bfrq -> 1 + arc_size trie + arc_size(Node ([], bfrq))
 
 
 
@@ -177,7 +183,7 @@ let empty inf = Node(inf, [])
 
 
 	 (*Fonction de base, qui crée un zipper à partir d'un trie, en plaçant le focus à la racine du trie.*)
-let trie_to_zipper trie = Zipper(trie, Top)
+	let trie_to_zipper trie = Zipper(trie, Top)
 
 
 (*Cette fonction prend un Zipper en argument, déplace le focus vers le premier noeud fils, si possible, et renvoie le zipper correspondant.*)
